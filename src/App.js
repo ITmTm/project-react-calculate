@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 
 import Wrapper from "./components/Wrapper/Wrapper";
 import Screen from "./components/Screen/Screen";
@@ -13,13 +13,19 @@ const btnValues = [
 		[0, '.', '='],
 ];
 
-const toLocaleString = (num) =>
-		String(num).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1 ');
+const toLocaleString = (num) => String(num).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1 ');
 
 const removeSpaces = (num) => num.toString().replace(/\s/g, '');
 
-const math = (a, b, sign) =>
-		sign === '+' ? a + b : sign === '-' ? a - b : sign === 'X' ? a * b : a / b;
+const math = (a, b, sign) => {
+		switch (sign) {
+				case '+': return a + b;
+				case '-': return a - b;
+				case 'X': return a * b;
+				case '/': return a / b;
+				default: return 0;
+		}
+};
 
 const zeroDivisionError = "Can't divide with 0";
 
@@ -30,114 +36,97 @@ const App = () => {
 				res: 0,
 		});
 
-		const numClickHandler = (e) => {
-				e.preventDefault();
-				const value = e.target.innerHTML;
+		const numClickHandler = useCallback((value) => {
 				if (removeSpaces(calc.num).length < 16) {
-						setCalc({
-								...calc,
-								num:
-									removeSpaces(calc.num) % 1 === 0 && !calc.num.toString().includes(".")
+						setCalc((prevState) => ({
+								...prevState,
+								num: removeSpaces(calc.num) % 1 === 0 && !calc.num.toString().includes(".")
 										? toLocaleString(Number(removeSpaces(calc.num + value)))
 										: toLocaleString(calc.num + value),
 								res: !calc.sign ? 0 : calc.res,
-						});
+						}));
 				}
-		};
+		}, [calc]);
 
-		const comaClickHandler = (e) => {
-				e.preventDefault();
-				const value = e.target.innerHTML;
+		const comaClickHandler = useCallback(() => {
+				if (!calc.num.toString().includes(".")) {
+						setCalc((prevState) => ({
+								...prevState,
+								num: calc.num + ".",
+						}));
+				}
+		}, [calc]);
 
-				setCalc({
-						...calc,
-						num: !calc.num.toString().includes(".") ? calc.num + value : calc.num,
-				});
-		};
-
-		const signClickHandler = (e) => {
-				setCalc({
-						...calc,
-						sign: e.target.innerHTML,
+		const signClickHandler = useCallback((sign) => {
+				setCalc((prevState) => ({
+						...prevState,
+						sign,
 						res: !calc.num
 							? calc.res
 							: !calc.res
 							? calc.num
-							: toLocaleString(
-									math(
-											Number(removeSpaces(calc.res)),
-											Number(removeSpaces(calc.num)),
-											calc.sign
-									)
-							),
+							: toLocaleString(math(
+									Number(removeSpaces(calc.res)),
+									Number(removeSpaces(calc.num)),
+									calc.sign
+							)),
 						num: 0,
-				});
-		};
+				}));
+		}, [calc]);
 
-		const equalsClickHandler = () => {
+		const equalsClickHandler = useCallback(() => {
 				if (calc.sign && calc.num) {
-						setCalc({
-								...calc,
+						setCalc((prevState) => ({
+								...prevState,
 								res:
 									calc.num === '0' && calc.sign === '/'
 										? zeroDivisionError
-										: toLocaleString(
-												math(
-														Number(removeSpaces(calc.res)),
-														Number(removeSpaces(calc.num)),
-														calc.sign
-												)
-											),
+										: toLocaleString(math(
+												Number(removeSpaces(calc.res)),
+												Number(removeSpaces(calc.num)),
+												calc.sign
+										)),
 								sign: '',
-								num: 0
-						});
+								num: 0,
+						}));
 				}
-		};
+		}, [calc]);
 
-		const invertClickHandler = () => {
-				setCalc({
-						...calc,
+		const invertClickHandler = useCallback(() => {
+				setCalc((prevState) => ({
+						...prevState,
 						num: calc.num ? toLocaleString(removeSpaces(calc.num) * -1) : 0,
 						res: calc.res ? toLocaleString(removeSpaces(calc.res) * -1) : 0,
 						sign: '',
-				});
-		};
+				}));
+		}, [calc]);
 
-		const percentClickHandler = () => {
-				let num = calc.num ? parseFloat(removeSpaces(calc.num)) : 0;
-				let res = calc.res ? parseFloat(removeSpaces(calc.res)) : 0;
-				setCalc({
-						...calc,
-						num: (num /= Math.pow(100, 1)),
-						res: (res /= Math.pow(100, 1)),
+		const percentClickHandler = useCallback(() => {
+				setCalc((prevState) => ({
+						...prevState,
+						num: calc.num ? calc.num / 100 : 0,
+						res: calc.res ? calc.res / 100 : 0,
 						sign: '',
-				});
-		};
+				}))
+		}, [calc]);
 
-		const resetClickHandler = () => {
+		const resetClickHandler = useCallback(() => {
 				setCalc({
-						...calc,
 						sign: '',
 						num: 0,
 						res: 0,
 				});
-		};
+		}, []);
 
-		const buttonClickHandler = (e, btn) => {
-				btn === 'C' || calc.res === zeroDivisionError
-					? resetClickHandler()
-					: btn === '+-'
-					? invertClickHandler()
-					: btn === '%'
-					? percentClickHandler()
-					: btn === '='
-					? equalsClickHandler()
-					: btn === '/' || btn === 'X' || btn === '-' || btn === '+'
-					? signClickHandler(e)
-					: btn === '.'
-					? comaClickHandler(e)
-					: numClickHandler(e);
-		};
+		const buttonClickHandler = useCallback((btn) => {
+				if (btn === 'C' || calc.res === zeroDivisionError) resetClickHandler();
+				else if (btn === '+-') invertClickHandler();
+				else if (btn === '%') percentClickHandler();
+				else if (btn === '=') equalsClickHandler();
+				else if (['/', 'X', '-', '+'].includes(btn)) signClickHandler(btn);
+				else if (btn === '.') comaClickHandler();
+				else numClickHandler(btn)
+		}, [calc, resetClickHandler, invertClickHandler, percentClickHandler, equalsClickHandler, signClickHandler, comaClickHandler, numClickHandler]);
 
 
 		return (
@@ -150,7 +139,7 @@ const App = () => {
 														key={i}
 														className={btn === '=' ? 'equals' : ''}
 														value={btn}
-														onClick={(e) => buttonClickHandler(e, btn)}
+														onClick={() => buttonClickHandler(btn)}
 												/>
 										);
 								})}
