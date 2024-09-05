@@ -11,7 +11,9 @@ const Screen = ({ value }) => {
 
 				let maxFontSize = 70;
 				let minFontSize = 1;
-				element.style.fontSize = `${maxFontSize}px`;
+				let currentFontSize = maxFontSize;
+
+				element.style.fontSize = `${currentFontSize}px`;
 
 				// Использование двоичного поиска для быстрого уменьшения размера шрифта
 				while (maxFontSize - minFontSize > 1) {
@@ -25,6 +27,7 @@ const Screen = ({ value }) => {
 						}
 				}
 
+					// Устанавливаем последнее значение, которое подходило
 				element.style.fontSize = `${minFontSize}px`;
 		}, [value]);
 
