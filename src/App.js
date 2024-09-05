@@ -70,7 +70,6 @@ const App = () => {
 				setCalc((prevState) => {
 						switch (btn) {
 								case 'C':
-								case prevState.res === "Can't divide by 0":
 										return {
 												sign: '',
 												num: 0,
@@ -124,10 +123,13 @@ const App = () => {
 												num: 0
 										};
 								case '.':
-										return {
-												...prevState,
-												num: !prevState.num?.toString().includes(".") ? prevState.num + "." : prevState.num,
-										};
+										if (!prevState.num.toString().includes(".")) {
+												return {
+														...prevState,
+														num: prevState + ".",
+												};
+										}
+										return prevState;
 								default:
 										return prevState;
 						}
