@@ -15,7 +15,7 @@ const btnValues = [
 
 const toLocaleString = (num) => String(num).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1 ');
 
-const removeSpaces = (num) => num.toString().replace(/\s/g, '');
+const removeSpaces = (num) => num ? num.toString().replace(/\s/g, '') : '0';
 
 const math = (a, b, sign) => {
 		switch (sign) {
@@ -51,77 +51,9 @@ const App = () => {
 										...prevState,
 										num: newNum,
 										res: !prevState.sign ? 0 : prevState.res,
-								}
+								};
 						}
 						return prevState; 			// Если длинна больше 16, возвращаем текущее состояние
-				})
-		}, []);
-
-		const comaClickHandler = useCallback(() => {
-				setCalc((prevState) => ({
-						...prevState,
-						num: !prevState.num.toString().includes(".") ? prevState.num + "." : prevState.num,
-				}));
-		}, []);
-
-		const signClickHandler = useCallback((sign) => {
-				setCalc((prevState) => ({
-						...prevState,
-						sign,
-						res: !prevState.num
-							? prevState.res
-							: !prevState.res
-								? prevState.num
-								: toLocaleString(
-										math(
-													Number(removeSpaces(prevState.res)),
-													Number(removeSpaces(prevState.num)),
-													prevState.sign
-										)),
-						num: 0,
-				}));
-		}, []);
-
-		const equalsClickHandler = useCallback(() => {
-				setCalc((prevState) => ({
-						...prevState,
-						res: prevState.num === '0' && prevState.sign === '/'
-							? "Can't divide by 0"
-							: toLocaleString(
-									math(
-											Number(removeSpaces(prevState.res)),
-											Number(removeSpaces(prevState.num)),
-											prevState.sign
-									)
-							),
-						sign: '',
-						num: 0,
-				}));
-		}, []);
-
-		const invertClickHandler = useCallback(() => {
-				setCalc((prevState) => ({
-						...prevState,
-						num: prevState.num ? toLocaleString(removeSpaces(prevState.num) * -1) : 0,
-						res: prevState.res ? toLocaleString(removeSpaces(prevState.res) * -1) : 0,
-						sign: '',
-				}));
-		}, []);
-
-		const percentClickHandler = useCallback(() => {
-				setCalc((prevState) => ({
-						...prevState,
-						num: prevState.num ? prevState.num / 100 : 0,
-						res: prevState.res ? prevState.res / 100 : 0,
-						sign: '',
-				}));
-		}, []);
-
-		const resetClickHandler = useCallback(() => {
-				setCalc({
-						sign: '',
-						num: 0,
-						res: 0,
 				});
 		}, []);
 
