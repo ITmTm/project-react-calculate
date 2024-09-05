@@ -30,7 +30,7 @@ const Screen = ({ value }) => {
 
 		useEffect(() => {
 				adjustFontSize();
-		}, [value, adjustFontSize()]);
+		}, [value, adjustFontSize]);
 
 		useEffect(() => {
 				const handleResize = () => {
