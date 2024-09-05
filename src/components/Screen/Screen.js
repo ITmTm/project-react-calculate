@@ -4,6 +4,7 @@ import './screen.scss';
 
 const Screen = ({ value }) => {
 		const textRef = useRef(null);
+		const resizeTimeoutRef = useRef(null);
 
 		const adjustFontSize = useCallback(() => {
 				const element = textRef.current;
@@ -15,7 +16,7 @@ const Screen = ({ value }) => {
 
 				element.style.fontSize = `${currentFontSize}px`;
 
-				// Использование двоичного поиска для быстрого уменьшения размера шрифта
+				// Двоичный поиск для изменения размера шрифта
 				while (maxFontSize - minFontSize > 1) {
 						const midFontSize = Math.floor((minFontSize + maxFontSize) / 2);
 						element.style.fontSize = `${midFontSize}px`;
@@ -37,12 +38,23 @@ const Screen = ({ value }) => {
 
 		useEffect(() => {
 				const handleResize = () => {
-						adjustFontSize();
+						// Очищаем предыдущий таймаут
+						if (resizeTimeoutRef.current) {
+								clearTimeout(resizeTimeoutRef.current);
+						}
+
+						// Устанавливаем новый таймаут для дебаунсинга
+						resizeTimeoutRef.current = setTimeout(() => {
+								adjustFontSize();
+						}, 200); // Задержка 200 мс
 				};
 
 				window.addEventListener('resize', handleResize);
 				return () => {
 						window.removeEventListener('resize', handleResize);
+						if (resizeTimeoutRef.current) {
+								clearTimeout(resizeTimeoutRef.current);
+						}
 				};
 		}, [adjustFontSize]);
 
