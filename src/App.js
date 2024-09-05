@@ -1,17 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 
 import Wrapper from "./components/Wrapper/Wrapper";
 import Screen from "./components/Screen/Screen";
 import ButtonBox from "./components/ButtonBox/ButtonBox";
 import Button from "./components/Button/Button";
-
-const btnValues = [
-		['C', '+-', '%', '/'],
-		[7, 8, 9, 'X'],
-		[4, 5, 6, '-'],
-		[1, 2, 3, '+'],
-		[0, '.', '='],
-];
 
 const toLocaleString = (num) => String(num).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1 ');
 
@@ -38,6 +30,16 @@ const App = () => {
 				num: 0,
 				res: 0,
 		});
+
+		// Мемоизация массива кнопок
+		const btnValues = useMemo(() => [
+				['C', '+-', '%', '/'],
+				[7, 8, 9, 'X'],
+				[4, 5, 6, '-'],
+				[1, 2, 3, '+'],
+				[0, '.', '='],
+		], []);
+
 
 		const numClickHandler = useCallback((value) => {
 				setCalc((prevState) => {
