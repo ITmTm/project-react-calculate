@@ -15,7 +15,7 @@ const btnValues = [
 
 const toLocaleString = (num) => String(num).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1 ');
 
-const removeSpaces = (num) => num ? num.toString().replace(/\s/g, '') : '0';
+const removeSpaces = (num) => (num !== undefined && num !== null) ? num.toString().replace(/\s/g, '') : '0';
 
 const math = (a, b, sign) => {
 		switch (sign) {
@@ -43,7 +43,7 @@ const App = () => {
 				setCalc((prevState) => {
 						const numWithoutSpaces = removeSpaces(prevState.num);
 						if (numWithoutSpaces.length < 16) {
-								const newNum = numWithoutSpaces % 1 === 0 && !prevState.num.toString().includes(".")
+								const newNum = numWithoutSpaces % 1 === 0 && !prevState.num?.toString().includes(".")
 									? toLocaleString(Number(numWithoutSpaces + value))
 									: toLocaleString(numWithoutSpaces + value);
 
@@ -58,6 +58,13 @@ const App = () => {
 		}, []);
 
 		const buttonClickHandler = useCallback((btn) => {
+				if (/[0-9]/.test(btn)) {
+						// Если нажата цифра, вызываем numClickHandler
+						numClickHandler(btn)
+						return;
+				}
+
+
 				setCalc((prevState) => {
 						switch (btn) {
 								case 'C':
@@ -117,13 +124,10 @@ const App = () => {
 								case '.':
 										return {
 												...prevState,
-												num: !prevState.num.toString().includes(".") ? prevState.num + "." : prevState.num,
+												num: !prevState.num?.toString().includes(".") ? prevState.num + "." : prevState.num,
 										};
 								default:
-										return {
-												...prevState,
-												num: numClickHandler(btn),
-										};
+										return prevState;
 						}
 				});
 		}, [numClickHandler]);
