@@ -1,70 +1,51 @@
-# Getting Started with Create React App
+# 🧮 Calculator App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Calculator App – это простое, но мощное калькуляторное приложение, разработанное с использованием современных технологий, таких как React и TypeScript. Приложение поддерживает базовые арифметические операции и включает в себя удобный адаптивный интерфейс.
 
-## Available Scripts
+<hr style="height: 1px;">
 
-In the project directory, you can run:
+## 📝 Description
+<h4>Calculator App позволяет пользователям:</h4>
+* Выполнять основные арифметические операции: сложение, вычитание, умножение и деление
+* Обрабатывать десятичные числа и отрицательные значения
+* Работать с адаптивным интерфейсом, который автоматически подстраивается под размер экрана
+* Поддержка цифр до 16 знаков для точных вычислений
+* Ввод чисел с автоматической подстройкой размера шрифта в зависимости от длины числа
+<hr style="height: 1px;">
 
-### `npm start`
+## 🎯 Functions
+<h4>Calculator App позволяет пользователям:</h4>
+* **Простой и чистый интерфейс** – Визуально привлекательный и понятный дизайн, подходящий для любых устройств.
+* **Адаптивный интерфейс** – Шрифт на экране калькулятора автоматически меняется, чтобы вписываться в доступное пространство (реализовано с использованием `useRef` и `useEffect`).
+* **Плавная обработка чисел** – Максимальная длина числа – 16 цифр, с автоматическим форматированием для тысяч.
+* **Обработка ошибок деления на ноль** – В случае деления на ноль выводится сообщение "Can't divide by 0".
+* **Интерактивные кнопки** – Реализована обработка всех основных арифметических операций, включая работу с отрицательными и десятичными числами.
+<hr style="height: 1px;">
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+## ⚙️ Technologies
+[![ReactJS](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org) &nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-yellow?style=for-the-badge&logo=JavaScript&logoSize=%20)](https://www.javascript.com/) &nbsp;
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org) &nbsp;
+[![Redux-Toolkit](https://img.shields.io/badge/Redux%20Toolkit-%23593d88?style=for-the-badge&logo=redux
+)](https://redux-toolkit.js.org/)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<hr>
 
-### `npm run build`
+## 📚  Using Libraries
+[![SASS](https://img.shields.io/badge/-blue?style=social&logo=sass&label=SASS%20(SCSS))](https://sass-lang.com/) &nbsp;
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<hr>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🧪 Testing
+* Run the tests:
+* `npm run test`
+<hr>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🚀 Getting Started
+Tools needed to run this app: `node` and `npm`
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- `npm install` to install dependencies
+- `npm start` to run the app
+- Go to `http://localhost:3000`
