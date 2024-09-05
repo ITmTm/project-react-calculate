@@ -19,15 +19,18 @@ const removeSpaces = (num) => num.toString().replace(/\s/g, '');
 
 const math = (a, b, sign) => {
 		switch (sign) {
-				case '+': return a + b;
-				case '-': return a - b;
-				case 'X': return a * b;
-				case '/': return a / b;
-				default: return 0;
+				case '+':
+						return a + b;
+				case '-':
+						return a - b;
+				case 'X':
+						return a * b;
+				case '/':
+						return b === 0 ? "Can't divide by 0" : a / b;		// Проверка деления на 0
+				default:
+						return 0;
 		}
 };
-
-const zeroDivisionError = "Can't divide with 0";
 
 const App = () => {
 		let [calc, setCalc] = useState({
@@ -37,78 +40,82 @@ const App = () => {
 		});
 
 		const numClickHandler = useCallback((value) => {
-				if (removeSpaces(calc.num).length < 16) {
-						setCalc((prevState) => ({
-								...prevState,
-								num: removeSpaces(calc.num) % 1 === 0 && !calc.num.toString().includes(".")
-										? toLocaleString(Number(removeSpaces(calc.num + value)))
-										: toLocaleString(calc.num + value),
-								res: !calc.sign ? 0 : calc.res,
-						}));
-				}
-		}, [calc]);
+				setCalc((prevState) => {
+						const numWithoutSpaces = removeSpaces(prevState.num);
+						if (numWithoutSpaces.length < 16) {
+								const newNum = numWithoutSpaces % 1 === 0 && !prevState.num.toString().includes(".")
+									? toLocaleString(Number(numWithoutSpaces + value))
+									: toLocaleString(numWithoutSpaces + value);
+
+								return {
+										...prevState,
+										num: newNum,
+										res: !prevState.sign ? 0 : prevState.res,
+								}
+						}
+						return prevState; 			// Если длинна больше 16, возвращаем текущее состояние
+				})
+		}, []);
 
 		const comaClickHandler = useCallback(() => {
-				if (!calc.num.toString().includes(".")) {
-						setCalc((prevState) => ({
-								...prevState,
-								num: calc.num + ".",
-						}));
-				}
-		}, [calc]);
+				setCalc((prevState) => ({
+						...prevState,
+						num: !prevState.num.toString().includes(".") ? prevState.num + "." : prevState.num,
+				}));
+		}, []);
 
 		const signClickHandler = useCallback((sign) => {
 				setCalc((prevState) => ({
 						...prevState,
 						sign,
-						res: !calc.num
-							? calc.res
-							: !calc.res
-							? calc.num
-							: toLocaleString(math(
-									Number(removeSpaces(calc.res)),
-									Number(removeSpaces(calc.num)),
-									calc.sign
-							)),
+						res: !prevState.num
+							? prevState.res
+							: !prevState.res
+								? prevState.num
+								: toLocaleString(
+										math(
+													Number(removeSpaces(prevState.res)),
+													Number(removeSpaces(prevState.num)),
+													prevState.sign
+										)),
 						num: 0,
 				}));
-		}, [calc]);
+		}, []);
 
 		const equalsClickHandler = useCallback(() => {
-				if (calc.sign && calc.num) {
-						setCalc((prevState) => ({
-								...prevState,
-								res:
-									calc.num === '0' && calc.sign === '/'
-										? zeroDivisionError
-										: toLocaleString(math(
-												Number(removeSpaces(calc.res)),
-												Number(removeSpaces(calc.num)),
-												calc.sign
-										)),
-								sign: '',
-								num: 0,
-						}));
-				}
-		}, [calc]);
+				setCalc((prevState) => ({
+						...prevState,
+						res: prevState.num === '0' && prevState.sign === '/'
+							? "Can't divide by 0"
+							: toLocaleString(
+									math(
+											Number(removeSpaces(prevState.res)),
+											Number(removeSpaces(prevState.num)),
+											prevState.sign
+									)
+							),
+						sign: '',
+						num: 0,
+				}));
+		}, []);
 
 		const invertClickHandler = useCallback(() => {
 				setCalc((prevState) => ({
 						...prevState,
-						num: calc.num ? toLocaleString(removeSpaces(calc.num) * -1) : 0,
-						res: calc.res ? toLocaleString(removeSpaces(calc.res) * -1) : 0,
+						num: prevState.num ? toLocaleString(removeSpaces(prevState.num) * -1) : 0,
+						res: prevState.res ? toLocaleString(removeSpaces(prevState.res) * -1) : 0,
 						sign: '',
 				}));
-		}, [calc]);
+		}, []);
 
 		const percentClickHandler = useCallback(() => {
 				setCalc((prevState) => ({
 						...prevState,
-						num: calc.num ? calc.num / 100 : 0,
-						res: calc.res ? calc.res / 100 : 0,
+						num: prevState.num ? prevState.num / 100 : 0,
+						res: prevState.res ? prevState.res / 100 : 0,
 						sign: '',
-				}))
-		}, [calc]);
+				}));
+		}, []);
 
 		const resetClickHandler = useCallback(() => {
 				setCalc({
@@ -119,14 +126,75 @@ const App = () => {
 		}, []);
 
 		const buttonClickHandler = useCallback((btn) => {
-				if (btn === 'C' || calc.res === zeroDivisionError) resetClickHandler();
-				else if (btn === '+-') invertClickHandler();
-				else if (btn === '%') percentClickHandler();
-				else if (btn === '=') equalsClickHandler();
-				else if (['/', 'X', '-', '+'].includes(btn)) signClickHandler(btn);
-				else if (btn === '.') comaClickHandler();
-				else numClickHandler(btn)
-		}, [calc, resetClickHandler, invertClickHandler, percentClickHandler, equalsClickHandler, signClickHandler, comaClickHandler, numClickHandler]);
+				setCalc((prevState) => {
+						switch (btn) {
+								case 'C':
+								case prevState.res === "Can't divide by 0":
+										return {
+												sign: '',
+												num: 0,
+												res: 0,
+										};
+								case '+-':
+										return {
+												...prevState,
+												num: prevState.num ? toLocaleString(removeSpaces(prevState.num) * -1) : 0,
+												res: prevState.res ? toLocaleString(removeSpaces(prevState.res) * -1) : 0,
+										};
+								case '%':
+										return {
+												...prevState,
+												num: prevState.num ? prevState.num / 100 : 0,
+												res: prevState.res ? prevState.res / 100 : 0,
+										};
+								case '=':
+										return {
+												...prevState,
+												res: prevState.num === '0' && prevState.sign === '/'
+														? "Can't divide by 0"
+														: toLocaleString(
+																math(
+																		Number(removeSpaces(prevState.res)),
+																		Number(removeSpaces(prevState.num)),
+																		prevState.sign
+																)
+														),
+												sign: '',
+												num: 0,
+										};
+								case '/':
+								case 'X':
+								case '-':
+								case '+':
+										return {
+												...prevState,
+												sign: btn,
+												res: !prevState.num
+														? prevState.res
+														: !prevState.res
+																? prevState.num
+																: toLocaleString(
+																		math(
+																				Number(removeSpaces(prevState.res)),
+																				Number(removeSpaces(prevState.num)),
+																				prevState.sign
+																		)
+																),
+												num: 0
+										};
+								case '.':
+										return {
+												...prevState,
+												num: !prevState.num.toString().includes(".") ? prevState.num + "." : prevState.num,
+										};
+								default:
+										return {
+												...prevState,
+												num: numClickHandler(btn),
+										};
+						}
+				});
+		}, [numClickHandler]);
 
 
 		return (
