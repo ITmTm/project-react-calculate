@@ -2,9 +2,13 @@ import React, {useRef, useEffect, useCallback} from "react";
 
 import './screen.scss';
 
-const Screen = ({ value }) => {
-		const textRef = useRef(null);
-		const resizeTimeoutRef = useRef(null);
+interface ScreenProps {
+	value: string | number;
+}
+
+const Screen: React.FC<ScreenProps> = ({ value }) => {
+		const textRef = useRef<HTMLParagraphElement>(null);
+		const resizeTimeoutRef = useRef<number | null>(null);
 
 		const adjustFontSize = useCallback(() => {
 				const element = textRef.current;
@@ -30,7 +34,7 @@ const Screen = ({ value }) => {
 
 					// Устанавливаем последнее значение, которое подходило
 				element.style.fontSize = `${minFontSize}px`;
-		}, [value]);
+		}, []);
 
 		useEffect(() => {
 				adjustFontSize();
@@ -39,7 +43,7 @@ const Screen = ({ value }) => {
 		useEffect(() => {
 				const handleResize = () => {
 						// Очищаем предыдущий таймаут
-						if (resizeTimeoutRef.current) {
+						if (resizeTimeoutRef.current !== null) {
 								clearTimeout(resizeTimeoutRef.current);
 						}
 
@@ -52,7 +56,7 @@ const Screen = ({ value }) => {
 				window.addEventListener('resize', handleResize);
 				return () => {
 						window.removeEventListener('resize', handleResize);
-						if (resizeTimeoutRef.current) {
+						if (resizeTimeoutRef.current !== null) {
 								clearTimeout(resizeTimeoutRef.current);
 						}
 				};
