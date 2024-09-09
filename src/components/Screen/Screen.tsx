@@ -1,4 +1,5 @@
 import React, {useRef, useEffect, useCallback} from "react";
+import { toLocaleString } from "../../App";
 
 import './screen.scss';
 
@@ -9,6 +10,12 @@ interface ScreenProps {
 const Screen: React.FC<ScreenProps> = ({ value }) => {
 		const textRef = useRef<HTMLParagraphElement>(null);
 		const resizeTimeoutRef = useRef<number | null>(null);
+
+			// Форматирование числа перед выводом на экран
+	const formattedValue =
+		typeof value === 'number' || !isNaN(Number(value))
+			? toLocaleString(value)
+			: value;
 
 		const adjustFontSize = useCallback(() => {
 				const element = textRef.current;
@@ -38,7 +45,7 @@ const Screen: React.FC<ScreenProps> = ({ value }) => {
 
 		useEffect(() => {
 				adjustFontSize();
-		}, [value, adjustFontSize]);
+		}, [formattedValue, adjustFontSize]);
 
 		useEffect(() => {
 				const handleResize = () => {
@@ -66,7 +73,7 @@ const Screen: React.FC<ScreenProps> = ({ value }) => {
 		return (
 				<div className='screen'>
 						<p className='responsive-text' ref={textRef}>
-								{value}
+								{formattedValue}
 						</p>
 				</div>
 		);
