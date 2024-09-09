@@ -19,6 +19,7 @@ export const toLocaleString = (num: string | number) => String(num).replace(/(?<
 	// Функция для удаления пробелов
 const removeSpaces = (num: string | number) => (num !== undefined && num !== null) ? num.toString().replace(/\s/g, '') : '0';
 
+	// Функция для математических операции
 const math = (a: number, b: number, sign: string): number | string => {
 	let result: number | string;
 
