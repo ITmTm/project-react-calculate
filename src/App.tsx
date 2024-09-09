@@ -14,7 +14,7 @@ interface CalcState {
 const MAX_VALUE = 1e12;
 
 	// Функция для формирования чисел
-const toLocaleString = (num: string | number) => String(num).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1 ');
+export const toLocaleString = (num: string | number) => String(num).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1 ');
 
 	// Функция для удаления пробелов
 const removeSpaces = (num: string | number) => (num !== undefined && num !== null) ? num.toString().replace(/\s/g, '') : '0';
@@ -128,7 +128,7 @@ const App: React.FC = () => {
 										);
 
 										// Форматирование результата
-										const formattedResult = typeof result === 'number'
+										const formattedResult = typeof result === 'number' && !isNaN(result)
 											? toLocaleString(result)
 											: result;
 
