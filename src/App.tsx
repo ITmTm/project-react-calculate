@@ -70,6 +70,8 @@ const App: React.FC = () => {
 		['0', '.', '='],
 	], []);
 
+	// Проверка на цифру
+	const isNumber = (btn: string) => !isNaN(Number(btn));
 
 	// Обработка нажатии цифр
 	const numClickHandler = useCallback((value: string) => {
@@ -104,7 +106,7 @@ const App: React.FC = () => {
 	}, []);
 
 	const buttonClickHandler = useCallback((btn: string) => {
-		if (isFinite(Number(btn))) {
+		if (isNumber(btn)) {
 			// Если нажата цифра, вызываем numClickHandler
 			numClickHandler(btn)
 			return;
