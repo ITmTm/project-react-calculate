@@ -97,7 +97,7 @@ const App: React.FC = () => {
 	}, []);
 
 	const buttonClickHandler = useCallback((btn: string) => {
-		if (/[0-9]/.test(btn)) {
+		if (isFinite(Number(btn))) {
 			// Если нажата цифра, вызываем numClickHandler
 			numClickHandler(btn)
 			return;
