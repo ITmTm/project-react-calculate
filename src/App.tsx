@@ -67,6 +67,11 @@ const App: React.FC = () => {
 			// Обработка нажатии цифр
 		const numClickHandler = useCallback((value: string) => {
 				setCalc((prevState) => {
+					// Если на экране 'Overflow', ввод блокируется
+					if (prevState.num === 'Overflow' || prevState.res === 'Overflow') {
+						return prevState;
+					}
+
 						const numWithoutSpaces = removeSpaces(prevState.num);
 						if (numWithoutSpaces.length < 16) {
 								const newNum = numWithoutSpaces % 1 === 0 && !prevState.num.includes(".")
@@ -100,6 +105,21 @@ const App: React.FC = () => {
 
 
 				setCalc((prevState: CalcState): CalcState => {
+
+					// Обработка нажатия на 'C' для сброса состояния
+					if (btn === 'C') {
+						return {
+							sign: '',
+							num: '0',
+							res: 0
+						}
+					}
+
+					// Если на экране 'Overflow', блокируем дальнейший ввод
+					if (prevState.num === 'Overflow' || prevState.res === 'Overflow') {
+						return prevState;
+					}
+
 						switch (btn) {
 								case 'C':
 										return {
@@ -126,6 +146,16 @@ const App: React.FC = () => {
 											Number(removeSpaces(prevState.num)),
 											prevState.sign
 										);
+
+										// Если результат переполнен, выводим только сообщение
+										if (result === 'Overflow') {
+											return {
+												...prevState,
+												res: 'Overflow',
+												sign: '',
+												num: '',
+											};
+										}
 
 										// Форматирование результата
 										const formattedResult = typeof result === 'number' && !isNaN(result)
@@ -174,7 +204,7 @@ const App: React.FC = () => {
 								{btnValues.flat().map((btn: string, i: number) => {
 										return (
 												<Button
-														key={`${btn}-${i}`}
+														key={`${btn}-${i}`} // key используется только для оптимизации рендеринга
 														className={btn === '=' ? 'equals' : ''}
 														value={btn}
 														onClick={() => buttonClickHandler(btn)}
