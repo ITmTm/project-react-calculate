@@ -47,6 +47,13 @@ const math = (a: number, b: number, sign: string): number | string => {
 	return result;
 };
 
+	// Функция для сброса состояния кулькулятора
+const resetCalc = (): CalcState => ({
+	sign: '',
+	num: '0',
+	res: 0,
+});
+
 const App: React.FC = () => {
 	const [calc, setCalc] = useState<CalcState>({
 		sign: '',
@@ -108,11 +115,7 @@ const App: React.FC = () => {
 
 			// Обработка нажатия на 'C' для сброса состояния
 			if (btn === 'C') {
-				return {
-					sign: '',
-					num: '0',
-					res: 0
-				}
+				return resetCalc();
 			}
 
 			// Если на экране 'Overflow', блокируем дальнейший ввод
