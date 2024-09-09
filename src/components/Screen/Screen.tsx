@@ -12,8 +12,9 @@ const Screen: React.FC<ScreenProps> = ({ value }) => {
 		const resizeTimeoutRef = useRef<number | null>(null);
 
 			// Форматирование числа перед выводом на экран
-	const formattedValue =
-		typeof value === 'number' || !isNaN(Number(value))
+	const formattedValue = value === 'Overflow'
+		? 'Overflow'
+		: typeof value === 'number' || !isNaN(Number(value))
 			? toLocaleString(value)
 			: value;
 
